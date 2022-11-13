@@ -1,5 +1,6 @@
 package com.spring.codesharingplatform.service;
 
+import com.spring.codesharingplatform.CreatedDateComparator;
 import com.spring.codesharingplatform.DTO.SharedCodeResponseDTO;
 import com.spring.codesharingplatform.model.SharedCode;
 import com.spring.codesharingplatform.repository.SharedCodeRepository;
@@ -9,7 +10,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.time.LocalDateTime;
-import java.time.temporal.ChronoUnit;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 public class SharedCodeService {
@@ -38,6 +40,18 @@ public class SharedCodeService {
         SharedCodeResponseDTO sharedCodeResponseDTO = new SharedCodeResponseDTO(foundSharedCode, foundSharedCode.getTimeLeft(), true);
         sharedCodeRepository.save(foundSharedCode);
         return sharedCodeResponseDTO;
+    }
+
+    public List<SharedCode> getLatestSharedCodes() {
+        List<SharedCode> foundSharedCodeList = sharedCodeRepository.findAll();
+        List<SharedCode> latestFiveCodes = new ArrayList<>();
+        List<SharedCode> sortedSharedCodeList = foundSharedCodeList.stream().sorted(new CreatedDateComparator().reversed()).collect(Collectors.toList());
+//      Collections.sort(foundSharedCodeList, new CreatedDateComparator().reversed());
+        for (int i = 0; i < 5; i++) {
+            latestFiveCodes.add(sortedSharedCodeList.get(i));
+//          latestFiveCodes.add(foundSharedCodeList.get(i));
+        }
+        return latestFiveCodes;
     }
 
 }

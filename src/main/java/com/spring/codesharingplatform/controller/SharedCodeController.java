@@ -6,6 +6,8 @@ import com.spring.codesharingplatform.service.SharedCodeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/code")
 public class SharedCodeController {
@@ -22,7 +24,12 @@ public class SharedCodeController {
     }
 
     @GetMapping("/{codeId}")
-    public SharedCodeResponseDTO getSharedCode(@PathVariable Long codeId){
-return sharedCodeService.getSharedCode(codeId);
+    public SharedCodeResponseDTO getSharedCode(@PathVariable Long codeId) {
+        return sharedCodeService.getSharedCode(codeId);
+    }
+
+    @GetMapping("/latest")
+    public List<SharedCode> getLatestFiveSharedCodes() {
+        return sharedCodeService.getLatestSharedCodes();
     }
 }
